@@ -9,7 +9,7 @@
     <link rel="stylesheet" type="text/css" href="/css/main.css">
  </head>
 
-<body>
+<body style="background:#EEEEEE;">
 
 		<div class="container">
 		<div align="center">
@@ -23,41 +23,58 @@
 		</nav>
 		</div>
 		</div>
-
+    <hr style="height:1px;border:none;color:#333;background-color:#333;" />
 
 <div class="big_three" style="margin-left:13%;margin-right:13%;" align="left">
-  <h2 align="center">The Meme Vector</h2>
-
+  <h1 align="center">The Meme Vector</h1>
+  <p></p>
 <div>
-  <button type="button" class="btn btn-info" data-toggle="collapse" data-target="#intro" align="left" style="background-color:black !important;"><img src="http://www.drodd.com/images15/question-mark11.png" border="0" alt="" style="max-width:100px;max-height:100px;" /> About me</button>
+  <button type="button" class="btn btn-info" data-toggle="collapse" data-target="#intro" align="left" style="background-color:#C0C0C0 !important;font-size:200% !important;"><img src="http://www.drodd.com/images15/question-mark11.png" border="0" alt="" style="min-width:100px;min-height:100px;max-width:100px;max-height:100px;" /> About me</button>
   <div class="info">
   <div id="intro" class="collapse" style="margin-left:0%;">
   I graduated from UNC Chapel Hill with a dual major in Psychology and Chemistry. I have no formal training in programming or data science so I'm hoping this portfolio along with an interview will convince you to hire me. For what it's worth, I have traveled the world extensively due to various fortuitous circumstances. I am willing to relocate or work remotely. The purpose of this site is to provide evidence that I will be well-suited to a career in data science.
   </div>
   </div>
 
-    <hr>
+    <hr style="height:1px;border:none;color:#333;background-color:#333;" />
   <p>Latest Post</p>
-  <button type="button" class="btn btn-info" data-toggle="collapse" data-target="#latestpost"><img src="http://www.datacleansing.net.au/Images/Site/DG_Data_Cleansing_Cycle_300px.png" border="0" alt="" style="max-width:100px" />Cleanliness is Next to Godliness</button>
+  <div>
+  <button type="button" class="btn btn-info" data-toggle="collapse" data-target="#latestpost" style="display:inline-block !important; background-color:#CCC0C0 !important;font-size:200% !important;"><img src="http://www.datacleansing.net.au/Images/Site/DG_Data_Cleansing_Cycle_300px.png" border="0" alt="" style="min-width:100px;min-height:100px;max-width:100px;max-height:100px;" /> Cleanliness is Next to Godliness</button>
+            <div id="tag_box" style="display:inline-block;padding:5px;">
+            <ul>
+              <li>Python</li>
+              <li>Data munging</li>
+              <li>Pandas</li>
+            </ul>
+            </div>
+  </div>
   <div class="info">
   <div id="latestpost" class="collapse" style="margin-left:0%;">
   We've all heard that data science is "the sexiest job" of the 21st century. But it's not all easy money and sex. For most, the least cool part about data science is data cleaning AKA data wrangling AKA data munging. This is the bread and butter of most data science projects and is actually something I know a fair amount about. I'll share some common techniques from this Kaggle project I worked on.
   </div>
   </div>
 
-   <hr>
+   <hr style="height:1px;border:none;color:#333;background-color:#333;" />
   <p>Current Project</p>
-  <button type="button" class="btn btn-info" data-toggle="collapse" data-target="#latestproj" align="left"><img src="http://image.slidesharecdn.com/dlcvd4l1generativemodelsandaversarialtraining-160803172437/95/deep-learning-for-computer-vision-generative-models-and-adversarial-training-upc-2016-5-638.jpg?cb=1470245137" border="0" alt="" style="max-width:100px" />Image Enhancement Using a GAN</button>
+  <button type="button" class="btn btn-info" data-toggle="collapse" data-target="#latestproj" style="display:inline-block !important; background-color:#C0C0C0 !important;font-size:200% !important;"><img src="http://image.slidesharecdn.com/dlcvd4l1generativemodelsandaversarialtraining-160803172437/95/deep-learning-for-computer-vision-generative-models-and-adversarial-training-upc-2016-5-638.jpg?cb=1470245137" border="0" alt="" style="min-width:100px;min-height:100px;max-width:100px;max-height:100px;"/> Image Enhancement Using a GAN</button>
+            <div id="tag_box" style="display:inline-block;">
+            <ul>
+              <li>Deep learning</li>
+              <li>Image processing</li>
+              <li>Generative adversarial networks</li>
+            </ul>
+            </div>
   <div id="latestproj" class="collapse" style="margin-left:0%;">
   You know how in that silly show CSI the officers can digitally enhanced any picture? It used to be fiction but thanks to the magic of Generative Adversarial Networks that's no longer the case. I joined a couple of data scientists to tackle the problem outlined <a href="http://ai-on.org/projects/photorealistic-3d-scene-postprocessing.html">here</a>. We used the 32-bit version of <a href="http://deeplearning.net/software/theano/install_ubuntu.html">Theano</a> with <a href="https://github.com/sklearn-theano/sklearn-theano">sklearn-theano</a> as a wrapper.
  </div>
  </div>
-
+<hr style="height:1px;border:none;color:#333;background-color:#333;" />
 </div>
 
 </div>
-
+ 
 <div class="container">
+
    <h2 align="center">Skills</h2>
 </div>
 <div class="container">
@@ -68,8 +85,19 @@
 <td valign="bottom" style="color:#EEEEEE"></td><td><a href="http://scikit-learn.org/stable/"><img src="https://avatars2.githubusercontent.com/u/365630?v=3&s=400" border="0" alt="" style="max-width:100px" /></a></td>
 <td valign="bottom" style="color:#EEEEEE"></td><td><a href="https://www.mongodb.com/"><img src="http://learnfromguru.com/wp-content/uploads/2016/08/mongodb.png" border="0" alt="" style="max-width:100px" /></a></td>
  </tr>
+
+<tr>
+<td valign="bottom" style="color:#EEEEEE"></td><td><a href="https://www.mysql.com/"><img src="https://www.electricmonk.nl/log/wp-content/uploads/2016/11/serveimage.png" border="0" alt="" style="max-width:100px" /></a></td>
+<td valign="bottom" style="color:#EEEEEE"></td><td><a href="https://www.crummy.com/software/BeautifulSoup/"><img src="https://www.crummy.com/software/BeautifulSoup/10.1.jpg" border="0" alt="" style="max-width:100px" /></a></td>
+<td valign="bottom" style="color:#EEEEEE"></td><td><a href="http://matplotlib.org/"><img src="http://matplotlib.org/_static/logo2.svg" border="0" alt="" style="max-width:100px" /></a></td>
+<td valign="bottom" style="color:#EEEEEE"></td><td><a href="https://www.mongodb.com/"><img src="https://policyviz.com/wp-content/uploads/2016/10/Excel-VBA.png" border="0" alt="" style="max-width:100px" /></a></td>
+ </tr>
+
  </table>
  </div>
+
+<hr style="height:1px;border:none;color:#333;background-color:#333;" />
+<footer style="height:100px;background:#EEEEEE;">  </footer>
 
  </body>
  </html>
