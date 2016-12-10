@@ -14,7 +14,7 @@ nav ul li, footer ul li {
 }
 
 .centered {
-   left:50%;
+   align: center;
 }
 
 a {
