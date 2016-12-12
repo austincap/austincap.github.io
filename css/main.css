@@ -19,7 +19,7 @@ nav ul li, footer ul li {
 
 a {
     text-decoration: none;
-    color: #999;
+    color: blue;
 }
 a:hover {
     text-decoration: underline;
@@ -28,10 +28,15 @@ h1 {
     font-size: 3em;
     font-family:'Helvetica', 'Arial', 'Sans-Serif';
 }
+h3 {
+    color: black;
+}
+
 p {
-    font-size: 1.5em;
-    line-height: 1.4em;
+    font-size: 1.1em;
+    line-height: 1.1em;
     color: #333;
+    padding-top:5px;
 }
 footer {
     border-top: 1px solid #d5d5d5;
@@ -46,3 +51,43 @@ ul.posts {
 ul.posts li {
     list-style: none;
 }
+
+figure { 
+  width: 300px; 
+      display:block;
+    margin:auto;
+  background: white;
+  border: 5px solid white; 
+  -webkit-box-shadow: 0 3px 10px #ccc; 
+  -moz-box-shadow: 0 3px 10px #ccc;
+  -webkit-transform: rotate(0deg); 
+  -moz-transform: rotate(0deg);
+  -webkit-transition: all 0.7s ease; 
+  -moz-transition: all 1s ease;
+  position: relative;
+}
+
+figcaption { 
+  text-align: center; 
+  display: block; 
+  font-size: 12px; 
+  font-style: italic; 
+}
+
+figure img { 
+  width: 100%; /* Scale down */
+}
+
+figure:hover {
+  -webkit-transform: rotate(-1deg); -moz-transform: rotate(1deg);
+  -webkit-box-shadow: 0 3px 10px #666; -moz-box-shadow: 0 3px 10px #666;
+}
+
+figure:focus {
+  outline: none;
+  -webkit-transform: rotate(0deg) scale(3.7); -moz-transform: rotate(0deg) scale(3.7);
+   -webkit-box-shadow: 0 3px 10px #666; -moz-box-shadow: 0 3px 10px #666;
+  z-index: 9999;
+}
+
+[contenteditable]:focus { outline: 0px solid transparent;}
