@@ -1,5 +1,5 @@
 body {
-    margin: 60px auto;
+    margin: 0px auto;
     width: 70%;
 }
 nav ul, footer ul {
@@ -11,10 +11,6 @@ nav ul, footer ul {
 nav ul li, footer ul li {
     display: inline;
     margin-right: 20px;
-}
-
-.centered {
-   align: center;
 }
 
 a {
