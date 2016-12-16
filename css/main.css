@@ -39,6 +39,22 @@ h1 {
 h3 {
     color: black;
 }
+hr {
+  height:1px;
+  border:none;
+  color:#333;
+  background-color:#333;
+}
+
+div.big_three{
+  margin-left:13%;
+  margin-right:13%;
+}
+
+div.tag_box {
+  margin:auto 5px;
+  padding:5px;
+}
 
 p {
     font-size: 1.1em;
