@@ -14,7 +14,7 @@ nav ul li, footer ul li {
 }
 
 div nav ul li a {
-  color:#668B8B;
+  color:#EEEEEE;
 }
 
 div ul li a {
@@ -49,6 +49,10 @@ hr {
 div.big_three{
   margin-left:13%;
   margin-right:13%;
+}
+
+.button_pic {
+  min-width:80px;min-height:80px;max-width:80px;max-height:80px;
 }
 
 #tag_box {
