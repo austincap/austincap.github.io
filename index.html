@@ -52,17 +52,69 @@
    <div style="margin:auto;">
    <button type="button" class="btn btn-info" data-toggle="collapse" data-target="#latestpost" style="display:inline-block !important; background-color:#CCC0C0 !important;font-size:170% !important;white-space:normal !important;"><img src="https://lh3.googleusercontent.com/J41hsV2swVteoeB8pDhqbQR3H83NrEBFv2q_kYdq1xp9vsI1Gz9A9pzjcwX_JrZpPGsa=w300" border="0" alt="" class="button_pic"/> Optimizing your upvotes</button></div>
             <div id="tag_box">
-            <ul>
-              <li>Python</li>
-              <li>Data munging</li>
-              <li>Pandas</li>
-            </ul>
+            Kaggle provided an 8GB dataset that was composed of the May 2015 comments on Reddit. To me the best use of this data was extracting information that would help me to maximize upvotes in the future. After determining how the data was structured, I figured a simple place to start was determining which subreddits you're most likely to get upvotes in. Then I wanted to play with some text analysis, so I figured out which specific words were most likely to result in downvotes. #entertainmentdata #python
         </div>
   </div>
         
 
   <div id="latestpost" class="collapse" style="margin-left:0%;">
-  Kaggle provided an 8GB dataset that was composed of the May 2015 comments on Reddit. To me the best use of this data was extracting information that would help me to maximize upvotes in the future. After determining how the data was structured, I figured a simple place to start was determining which subreddits you're most likely to get upvotes in. Then I wanted to play with some text analysis, so I figured out which specific words were most likely to result in downvotes.
+   <h3>Exploratory data analysis</h3>
+  <p>The first thing I had to do was familiarize myself with the database. To even do that in the first place I had to utilize the <a href="https://docs.python.org/2/library/sqlite3.html">sqlite3</a> library. You might think the overview <a href="https://www.kaggle.com/reddit/reddit-comments-may-2015">here</a> would be enough, but no. By looking at actual sample chunks of the database I was able to determine that <code>ups</code> (upvotes) and <code>score</code> were identical, whereas the <code>downs</code> value was always 0. Because of this I couldn't get actual downvote data, so I had to use use "non-upvoted" (a <code>score</code> of 0 or 1) instead. I only used 500,000,000 data points for my analysis due to computational constraints.</p>
+
+  <h3>Idea behind the algorithm</h3>
+  <p>I tallied the number of comments in each subreddit with a <code>score</code> larger than 10. Why 10? Whenever I hit double digits on a reddit comment, I personally feel success (not so with a reddit post though). Why did I use a tally of the comments with 10+ upvotes rather than the number of upvotes per se? I wanted to capture a general upvoting behavior in my analysis while at the same time ignoring highly upvoted outliers. I also only retained data from subreddits with at least 5,000 comments that had 10+ upvotes. In addition to reducing the amount of data to be processed, the purpose of this was to filter out relatively inactive subreddits preventing them from distorting later upvote/non-upvote ratio analysis. In these small subreddits you'd likely get upvoted, but the net upvotes wouldn't be very high despite a high upvote/non-upvote ratio. A 5,000 upvoted comment threshold also seemed to be the sweet spot for the graph not changing too dramatically (I experimented in intervals of 500 all the way up to 10,000). For 10+ upvoted posts this yielded a graph that looked like this:</p>
+  
+    <div>
+     <figure tabindex="1">
+      <img src="/res/upvoted.png" />
+      <figcaption contenteditable="false">Upvoted threshold of 10+</figcaption>
+   </figure>
+   </div>
+
+  <p>For non-upvoted posts (a <code>score</code> of 1 or 0) this yielded a graph that looked like this:</p>
+      <div>
+     <figure tabindex="2">
+      <img src="/res/non-upvoted.png" />
+      <figcaption contenteditable="false">Non-upvoted</figcaption>
+   </figure>
+   </div>
+  <p>I also generated a graph that used an upvoted threshold of 5+ for good measure. As you can see it looks pretty similar to my 10+ upvoted graph anyway:</p>
+      <div>
+     <figure tabindex="3">
+      <img src="/res/upvoted5.png" />
+      <figcaption contenteditable="false">Upvoted threshold of 5+</figcaption>
+   </figure>
+   </div>
+  <p>Next, I had to zip together the upvoted dictionary with the downvoted dictionary on each subreddit key. Apparently there is no built-in python function to do this, so I used the code <a href="http://stackoverflow.com/questions/16458340/python-equivalent-of-zip-for-dictionaries">here</a>. Unfortunately the function I used to <a href="http://stackoverflow.com/questions/613183/sort-a-python-dictionary-by-value">sort the matplotlib bar chart in descending order</a> produced a list of tuples. Rather than reinventing the wheel I <a href="http://stackoverflow.com/questions/3783530/python-tuple-to-dict">converted the tuple lists into dictionaries</a> and then back into a list of 3-tuples containing the subreddit name, the number of upvoted posts, and the number of non-upvoted posts. Then I converted that list of 3-tuples into a list of 2-tuples with the second value in each tuple being the number of upvoted posts divided by the number of non-upvoted posts, creating the ratios used for the final graph. That was reconverted back into a dictionary to work with my sorting algorithm, which finally produced an ordered list of 2-tuples that was used to make the following graphs:</p>
+
+      <div>
+     <figure tabindex="4">
+      <img src="/res/good_ratio.png" />
+      <figcaption contenteditable="false">Good upvote/non-upvote ratio</figcaption>
+   </figure>
+   </div>
+  <p></p>
+      <div>
+     <figure tabindex="5">
+      <img src="/res/bad_ratio.png" />
+      <figcaption contenteditable="false">Bad upvote/non-upvote ratio</figcaption>
+   </figure>
+   </div>
+ <p></p>
+
+  <h3>Insights</h3>
+  <ul>
+  <li>The 'nba', 'nfl', 'soccer', and 'hockey' subreddits all make appearance in the top 15 upvote and non-upvote graphs, but the conspicuously absent 'baseball' is the only sport-oriented subreddit that appears in the top 15 of the high upvote/non-upvote ratio graph. Perhaps because baseball is less popular it also has a tighter, more upvote-prone, community.</li>
+  <li>The majority of the subreddits in the 50 most likely to upvote and the 50 least likely to upvote lists are the same because both are correlated to size. That's why an upvote/non-upvote ratio is more useful. There are a few anomalies that are only on one list and not the other such as 'electronic_cigarette', CasualConversation', and 'amiibo'. There seems to be a general societal distaste for electronic cigarettes and amiibos so that sort of makes sense. 'CasualConversation' probably doesn't get as many upvotes because the users there are more concerned with actually talkingn to each other rather than getting internet points.</li>
+  <li>Most of the subreddits with a good upvote/non-upvote ratio are silly ('BlackPeopleTwitter', 'me_irl', 'TrollXChromosomes'), <a href="http://www.urbandictionary.com/define.php?term=circle+jerk&defid=5892149">circlejerky</a> ('fatlogic', 'childfree', 'TumblrInAction'), TV-show-related ('gameofthrones', 'shield', 'survivor'), or sport-related subreddits ('soccer', 'nfl', 'nba'). People are more prone to upvote silly stuff frivolously and in many of the more circlejerky communities, you don't even have the option to downvote. At first you might be surprised to find that 'CoonTown' made it (barely) into the top 50 subreddits for upvotes, but consider that the people who are part of that community often don't have anywhere else to express their beliefs. I'd categorize them as circlejerky as well. However, it's a little strange to me that the 'europe' and 'unitedkingdom' subreddits made it into the top 50. I'd expect a fairly diverse userbase there ergo not such a consistent upvote ratio.</li>
+  <li>Fifteen of the 50 subreddits with the worst upvote/non-upvote ratio are mostly video game-related ('pcmasterrace', '2007scape', 'pokemon') versus just four of the top 50. Then you have some very large and popular subreddits in the bottom 50 ('explainlikeimfive', 'askreddit', 'pics') but I think that's mainly an artifact of so many people making posts that only a small portion of them gain any traction. Strangely, the only two country-based subreddits in the bottom 50 are 'India' and 'canada'. These are relatively small subreddits so the only conclusion is that the people there are less likely to upvote. You have a few larger politically oriented subreddits in the bottom 50 ('ukpolitics', 'politics', 'worldnews') as well as a few smaller very specific hobby oriented subreddits ('Bitcoin', 'motorcycles', 'magicTCG'). Political subreddits are intrinsically full of vitriol and people who get very into their niche hobbies tend to not take too kindly to newcomers. I suspect the users of 'raisedbynarcissists' aren't the type to upvote frivolously either. The only on in the bottom 50 I don't have a good explanation for is 'newsokur', a Japanese news subreddit.</li>
+  </ul>
+
+  <h3>Additional details explained</h3>
+  <p>First let me justify that convoluted converting between tuples and dictionaries several times. Just plugging in these conversions and using other people's code saved me a bit of time versus just coding a new set of functions from scratch. It's a little computationally inefficient but the bottleneck is retrieving the data from the SQLite database anyway. All in all it was a better use of my time to code the way I did.</p>
+  <p>It was frustratingn not having actual downvote data. The <code>score</code> value I ended up using is the sum of all the upvotes and downvotes a comment received. This means that some of my "non-upvoted" data was actually equally upvoted and downvoted posts. Sadly there's no way to control for that, another reason why I went with the "tally every comment that meets a threshold" strategy.</p>
+  <p>I played around with different amounts of data analyzed, and it did change my results dramatically. There's over a terabyte of data available and I didn't even use 8GB. It'd be interesting to run this analysis on the complete data set one day.</p>
+
   </div>
   
 
