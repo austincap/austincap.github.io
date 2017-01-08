@@ -28,7 +28,7 @@
 
 <div class="big_three" style="margin-left:13%;margin-right:13%;" align="left">
 
-  <h1 align="center">The Meme Vector</h1>
+  <h1 align="center">Austin Capobianco</h1>
   <div style="display:inline-flex;">
   <div style="margin:auto;">
   <button type="button" class="btn btn-info" data-toggle="collapse" data-target="#intro" align="left" style="background-color:#C0C0C0 !important;font-size:170% !important;white-space:normal !important;"><img src="http://www.drodd.com/images15/question-mark11.png" border="0" alt="" class="button_pic"/> About this blog</button></div>
@@ -38,7 +38,7 @@
     </div>
 
   <div id="intro" class="collapse" style="margin-left:0%;">
-  This page is for smaller memes like tutorials, essays, and various cool stuff I find on the net. Naturally, there will be some posts concerning my larger projects here.
+  Placeholder
   </div>
 
 
@@ -47,13 +47,134 @@
   <p>Latest Post</p>
   <div style="display:inline-flex;">
   <div style="margin:auto;">
-  <button type="button" class="btn btn-info" data-toggle="collapse" data-target="#latestpost" style="display:inline-block !important; background-color:#CCC0C0 !important;font-size:170% !important;white-space:normal !important;"><img src="https://lh3.googleusercontent.com/J41hsV2swVteoeB8pDhqbQR3H83NrEBFv2q_kYdq1xp9vsI1Gz9A9pzjcwX_JrZpPGsa=w300" border="0" alt="" class="button_pic"/> Optimizing your upvotes</button></div>
+  <button type="button" class="btn btn-info" data-toggle="collapse" data-target="#latestpost" style="display:inline-block !important; background-color:#CCC0C0 !important;font-size:170% !important;white-space:normal !important;"><img src="http://www.redotheweb.com/images/nodejs-mysql.png" border="0" alt="" class="button_pic"/> Using node.js to send data to mysql</button></div>
+            <div id="tag_box">
+            During the development my Meme War project I discovered there was no tutorial on how to let the client send a query and receive a response without using PHP. At least there was no tutorial that made it clear.
+            </div>
+  </div>
+
+  <div id="latestpost" class="collapse" style="margin-left:0%;">
+  <h3>Server set up</h3>
+  <p>Node.js probably needs no introduction but too bad it's getting one anyway. It's a very popular JavaScript runtime that's really good at sending data to a bunch of different devices. Go to <a href="https://nodejs.org/en/download/">their site</a> to install it and create a directory where you want to start building your server. Then point your command line to your directory and type in <code>npm install socket.io mysql express</code>. Socket.io is the main framework that's used to send and receive data from the server to client and vice versa. Mysql is necessary to access the mysql database. Express basically just makes building a web app in node.js easier. You'll also need to enable port 8081 on your computer's firewall and port forward that port on your router's web interface. You can use any port that's not already being used but let's just use this one for this tutorial.</p>
+
+  <p>Anyway, that <code>npm install socket.io mysql express</code> command should have generated a folder called node_modules in your directory. Now create a new file in your project directory called main.js. Well you can call it whatever you want as long as it's a .js file. Now enter all this code in it:
+  <pre><code>
+  var http = require('http'); //needed to build a webserver in node
+  var express = require('express'); //streamlines the process
+  var mysql = require('mysql'); //needed to access database
+  var app = express(); //creates express application
+  var server = http.createServer(app); //creates the server
+  var io = require('socket.io').listen(server); //needed to send data back and forth between server and clients
+  server.listen(8081); //makes the server listen on port 8081
+  console.log('Server running at 127.0.0.1:8081'); //just so you can see that it's running
+
+  var pool = mysql.createPool({ //creates a pool of potential connections to the database
+    connectionLimit : 100, //allows 100 different clients to connect at once
+    host     : 'localhost', //the server hosting your database, in this case your local machine
+    user     : 'root',
+    password : '',
+    database : 'testdb'
+  });
+
+  io.sockets.on('connection', function(socket){ //whenever a client connects
+    socket.on('query', function(query){ //listen for the 'query' event from client
+      var query = JSON.stringify(query); //convert the socket data object into a string
+      pool.getConnection(function(err, connection){ //make a connection to the database
+        connection.query(query, function(err, results){ //query the database
+          if(err) {throw err;} //if there's an error, show it in the console
+          else {socket.emit('results', results[0]);} //otherwise make the server emit a 'results' event that's carrying the result data (only take the first entry found)
+        });
+        connection.release(); //end connection
+      });
+    });
+  });
+
+  app.get('/', function(request, response){ //app does the following when a client goes to 127.0.0.1:8081/
+    response.sendFile(path.join(__dirname + '/index.html')); //server sends the index.html to the client that requested it from the server
+  });
+  </code></pre>
+  Now your server is running, but when you point your browser to 127.0.0.1:8081 there's nothing there! That's because we still need to send an html file which we'll make next.
+</p>
+
+  <h3>HTML file</h3>
+  <p>
+    <pre><code>
+    <xmp>
+      <html>
+      <head>
+        <title>Access mysql server using node.js express and no PHP</title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+        <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
+        <!-- need these for the client to be able to use jquery and socket.io -->
+         <script type="text/javascript">
+              $(document).ready(function () {
+                // create new socket connection to your server 
+                var socket = io.connect('http://localhost:8081'); 
+                // use jquery to listen for the submit button with the 'mysql-submit' id being clicked
+                $('#mysql-submit').click(function () {
+                  // when it's clicked, jquery grabs the text entered into the box
+                  // with the 'mysql-query' id and the client emits a 'query' socket event
+                  socket.emit('query', $('#mysql-query').val());
+                });
+                // whenever the server sends the client a 'query-results' event
+                socket.on('query-results', function(results){
+                  // place the result data into the div with class 'datadiv'
+                  $('div.datadiv').text(JSON.stringify(results));
+                });
+              });
+
+          </script>
+      </head>
+      <body>
+        <div style="margin:100px;">
+          <h2>Your data: </h2>
+          <div class="datadiv"></div>
+          <input id="mysql-query" type="text" value="Enter a query here"/>
+          <input id="mysql-submit" type="submit" value="Submit"/>
+        </div>
+      </body>
+      </html>
+      </xmp>
+    </code></pre>
+    Almost done! We just need to create the MySQL database. 
+  </p>
+  
+  <h3>Creating the MySQL database</h3>
+  <p>First you need to <a href="https://dev.mysql.com/downloads/installer/">install MySQL</a>. It should make you choose a username and password but I'll just assume you chose the default username 'root' and the default password ''. Once that's done, restart, then immediately go to your firewall and router web interface to port forward port 3306 (MySQL's default). Now your computer is a server and clients will be able to send MySQL queries to your computer through that port. In production you probably want to use a MySQL webhosting service because this makes your personal computer vulnerable to hackers. But don't worry about that for the purpose of this tutorial. Next, open up your command prompt again but this time it doesn't really matter where you do it. Type in: 
+  <pre><code>mysql -u root -p</code></pre>
+  then enter your password. Now you have have access to the MySQL shell. Create a new database by type in:
+  <pre><code>create database testdb;</code></pre>
+  The semicolon matters. Now type in:
+  <pre><code>use testdb;</code></pre>
+  Now you need to create the table:
+  <pre><code>create table testtable (name varchar(20), number int);</code></pre>
+  Finally, enter in some test data:
+  <pre><code>insert into testtable (name, number) values ("john", 3);</code></pre>
+  Ok, now let's test the whole thing out.
+  </p>
+
+  <h3>Testing</h3>
+  <p>
+    Start your node.js server by going to your project directory in the command prompt and entering <code>node main.js</code>. Your MySQL server should be running already, but if it's not, type <code>mysqld</code> into a second command prompt. Now your webpage server and MySQL server should be running and be able to pass data through port 8081 and port 3306 respectively. Now type <code>http://localhost:8081/</code> into your web browser address bar to access your website. Type <code>select * from testtable;</code> (or some other MySQL query) into the form you created and click the submit button. If your test data doesn't show up, send me an email and I'll figure out why.</p>
+
+  <h3>Additional details explained</h3>
+  <p>While the 'connection' socket event is a default event, the 'query' and 'results' events are not and their names are arbitrary and you must explicitly define them. This confused me for an embarassingly long time while I was learning to use socket.io.</p>
+  <p>This is just to use your site on your local machine. Enabling your web app to receive data from the outside world is a whole other headache.</p>
+  <p>There's tons of tutorials about using socket.io, mysql, and express, but none of them had all 3 of the following necessary components for what I was trying to make work: <code>var server = http.createServer(app); var io = require('socket.io').listen(server); server.listen(8081);</code> Whenever I followed other people's tutorials to the letter they didn't work for me. It took some trial and error to find this magic incantation so I figure might as well share it.</p>
+  </div>
+
+<hr />
+
+  <p>1/2/16</p>
+  <div style="display:inline-flex;">
+  <div style="margin:auto;">
+  <button type="button" class="btn btn-info" data-toggle="collapse" data-target="#post1" style="display:inline-block !important; background-color:#CCC0C0 !important;font-size:170% !important;white-space:normal !important;"><img src="https://lh3.googleusercontent.com/J41hsV2swVteoeB8pDhqbQR3H83NrEBFv2q_kYdq1xp9vsI1Gz9A9pzjcwX_JrZpPGsa=w300" border="0" alt="" class="button_pic"/> Optimizing your upvotes</button></div>
             <div id="tag_box">
             Kaggle provided an 8GB dataset that was composed of the May 2015 comments on Reddit. To me the best use of this data was extracting information that would help me to maximize upvotes in the future. After determining how the data was structured, I figured a simple place to start was determining which subreddits you're most likely to get upvotes in. Then I wanted to play with some text analysis, so I figured out which specific words were most likely to result in downvotes. You can check out my python notebook <a href="https://www.kaggle.com/austincap/d/reddit/reddit-comments-may-2015/best-subs-for-upvotes-worst-words-for-upvotes">here</a>.
             </div>
   </div>
 
-  <div id="latestpost" class="collapse" style="margin-left:0%;">
+  <div id="post1" class="collapse" style="margin-left:0%;">
   <h3>Exploratory data analysis</h3>
   <p>The first thing I had to do was familiarize myself with the database. To even do that in the first place I had to utilize the <a href="https://docs.python.org/2/library/sqlite3.html">sqlite3</a> library. You might think the overview <a href="https://www.kaggle.com/reddit/reddit-comments-may-2015">here</a> would be enough, but no. By looking at actual sample chunks of the database I was able to determine that <code>ups</code> (upvotes) and <code>score</code> were identical, whereas the <code>downs</code> value was always 0. Because of this I couldn't get actual downvote data, so I had to use use "non-upvoted" (a <code>score</code> of 0 or 1) instead. I only used 500,000,000 data points for my analysis due to computational constraints.</p>
 
@@ -112,26 +233,10 @@
   <p>I played around with different amounts of data analyzed, and it did change my results dramatically. There's over a terabyte of data available and I didn't even use 8GB. It'd be interesting to run this analysis on the complete data set one day.</p>
 
   </div>
-  </div>
-
-<hr />
-
-  <p>Earlier Posts</p>
-  <div style="display:inline-flex;">
-  <div style="margin:auto;">
-  <button type="button" class="btn btn-info" data-toggle="collapse" data-target="#latestproj" style="display:inline-block !important; background-color:#C0C0C0 !important;font-size:170% !important;white-space:normal !important;"><img src="http://image.slidesharecdn.com/dlcvd4l1generativemodelsandaversarialtraining-160803172437/95/deep-learning-for-computer-vision-generative-models-and-adversarial-training-upc-2016-5-638.jpg?cb=1470245137" border="0" alt="" class="button_pic"/> Placeholder</button></div>
-            <div id="tag_box">
-            Placeholder.
-            </div>
-  </div>
-
-
-  <div id="latestproj" class="collapse" style="margin-left:0%;">
-  Placeholder
-  </div>
 
 
 <hr />
+
 
 </div>
 
